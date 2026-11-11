@@ -1,0 +1,32 @@
+[project]
+name = "solana-sec-bench"
+version = "0.1.0"
+description = "Benchmark for AI detection, patching, and exploitation of Solana program vulnerabilities"
+requires-python = ">=3.11"
+dependencies = [
+    "sec-bench-core @ git+https://github.com/Quincy-Labs/sec-bench-core@v0.3.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "tests"]
+markers = ["toolchain: needs cargo-build-sbf (skipped when it is not installed)"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["solana_bench"]
+
+[tool.ruff.format]
+quote-style = "double"

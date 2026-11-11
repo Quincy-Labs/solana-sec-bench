@@ -1,0 +1,8 @@
+id: FIX-0001
+title: Harness test fixture (stores value + 1)
+source: audit
+bug_class: arithmetic
+bug_location: "lib::process_instruction"
+tasks: [patch, exploit]
+framework: pinocchio
+solana_version: "4.1.0"

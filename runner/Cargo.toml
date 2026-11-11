@@ -1,0 +1,22 @@
+# Shared test runner. The harness copies a case's tests into tests/ and runs
+# them against the case's compiled program (PROGRAM_SO, PROGRAM_ID env vars).
+# Versions of the solana-* crates are pinned to the ones litesvm uses, so their
+# types line up.
+[package]
+name = "case-runner"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+litesvm = "=0.18.2"
+sha2 = "0.10"
+solana-address = { version = "=2.7.0", features = ["rand"] }
+solana-keypair = "=3.1.2"
+solana-signer = "=3.0.1"
+solana-instruction = "=3.5.1"
+solana-transaction = "=4.3.0"
+solana-account = "=4.7.0"
+solana-message = "=4.6.0"
+
+[workspace]

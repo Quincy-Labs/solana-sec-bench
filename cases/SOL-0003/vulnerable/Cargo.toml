@@ -1,0 +1,29 @@
+[package]
+name = "points"
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.secbench]
+program_id = "H1bRzXFwRpQrCo5CYMt5td6j88TPdkfYkv2y9DxxT2ob"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+custom-heap = []
+custom-panic = []
+anchor-debug = []
+
+[dependencies]
+anchor-lang = "=1.2.2"
+
+[profile.release]
+overflow-checks = true
+
+[workspace]

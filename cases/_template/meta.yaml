@@ -1,0 +1,16 @@
+id: SOL-XXXX
+title: ""
+source: audit             # audit | incident | clean
+reference: ""             # report URL, or "synthetic: ..." for cases written for the benchmark
+report_date: ""
+severity: ""              # critical | high | medium | low | none
+bug_class: ""             # see docs/TAXONOMY.md
+bug_location: ""          # module::function (Anchor handlers: <program module>::<fn>)
+contamination_risk: ""    # low | medium | high
+tasks: [detect, patch, exploit]
+framework: ""             # anchor | pinocchio | native
+solana_version: ""        # `cargo build-sbf --version` the case was checked with
+license_note: ""
+reviewers: [self]
+added: ""
+leak_terms: []            # case-specific words that would hint at the bug

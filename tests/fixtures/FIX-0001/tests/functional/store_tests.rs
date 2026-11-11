@@ -1,0 +1,13 @@
+use case_runner::prelude::*;
+
+#[test]
+fn stores_something() {
+    let (mut svm, program_id) = setup();
+    let payer = funded_keypair(&mut svm, 1_000_000_000);
+    let state = Address::new_unique();
+    let acct = program_account(&svm, program_id, vec![0u8; 8]);
+    svm.set_account(state, acct).unwrap();
+    let ix = Instruction { program_id, accounts: vec![AccountMeta::new(state, false)], data: 7u64.to_le_bytes().to_vec() };
+    send(&mut svm, &[ix], &[&payer]).unwrap();
+    assert_ne!(svm.get_account(&state).unwrap().data[..8], [0u8; 8]);
+}
