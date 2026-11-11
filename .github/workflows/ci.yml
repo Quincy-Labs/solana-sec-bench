@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  SOLANA_VERSION: v4.1.2   # solana-cli; ships cargo-build-sbf 4.1.0 (meta solana_version)
+
+jobs:
+  unit:
+    name: unit (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked --python ${{ matrix.python }}
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Tests (build tests skip without cargo build-sbf)
+        run: uv run pytest -q
+
+  toolchain:
+    name: builds and cases (Solana toolchain)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Cache Solana toolchain, crates and build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/solana
+            ~/.cache/solana
+            ~/.cargo/registry
+            ~/.cache/solana-sec-bench
+          key: solana-${{ env.SOLANA_VERSION }}-${{ hashFiles('runner/Cargo.lock', 'cases/*/*/Cargo.lock') }}
+          restore-keys: solana-${{ env.SOLANA_VERSION }}-
+      - name: Install Solana toolchain
+        run: |
+          if [ ! -x "$HOME/.local/share/solana/install/active_release/bin/cargo-build-sbf" ]; then
+            sh -c "$(curl -sSfL https://release.anza.xyz/${SOLANA_VERSION}/install)"
+          fi
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - run: cargo build-sbf --version
+      - run: uv sync --locked
+      - name: Build tests (real cargo build-sbf and LiteSVM runs)
+        run: uv run pytest -q
+      - name: Check every case
+        run: uv run sec-bench check-case --all
